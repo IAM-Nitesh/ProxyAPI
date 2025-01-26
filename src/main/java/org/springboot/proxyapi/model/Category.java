@@ -1,15 +1,10 @@
 package org.springboot.proxyapi.model;
 
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Category {
-
     private String type;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }
