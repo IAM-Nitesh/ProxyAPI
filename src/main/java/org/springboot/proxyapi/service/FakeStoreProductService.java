@@ -16,6 +16,8 @@ import javax.management.InstanceNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 @Service
 public class FakeStoreProductService implements ProductService {
 
@@ -72,7 +74,7 @@ public class FakeStoreProductService implements ProductService {
         fakeStoreDto.setId(product.getId());
         fakeStoreDto.setPrice(product.getPrice());
         fakeStoreDto.setDescription(product.getDescription());
-        fakeStoreDto.setCategory(product.getCategory().getType());
+        fakeStoreDto.setCategory(product.getCategory().getTitle());
         fakeStoreDto.setTitle(product.getTitle());
 
         ResponseExtractor<ResponseEntity<FakeStoreDto>> responseExtractor =
@@ -90,6 +92,23 @@ public class FakeStoreProductService implements ProductService {
 
     }
 
+    @Override
+    public Product removeProductById(Long id)  throws ProductNotFoundException{
+
+        FakeStoreDto fakeStoreDto = new FakeStoreDto();
+
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(fakeStoreDto, FakeStoreDto.class);
+        ResponseExtractor<ResponseEntity<FakeStoreDto>> responseExtractor = restTemplate.responseEntityExtractor(FakeStoreDto.class);
+
+        FakeStoreDto fakeStoreDto1 = restTemplate.execute("https://fakestoreapi.com/products/"+id, HttpMethod.DELETE, requestCallback, responseExtractor).getBody();
+
+        if ( fakeStoreDto1 == null){
+            throw new ProductNotFoundException(200L,"Product with id: "+id+" doesn't exists");
+        }
+
+        return convertFakeStoreDtoToProduct(fakeStoreDto1);
+    }
+
     public Product convertFakeStoreDtoToProduct(FakeStoreDto fakeStoreDto) {
         if (fakeStoreDto == null) {
             return null;
@@ -102,7 +121,7 @@ public class FakeStoreProductService implements ProductService {
         product.setDescription(fakeStoreDto.getDescription());
 
         Category category = new Category();
-        category.setType(fakeStoreDto.getCategory());
+        category.setTitle(fakeStoreDto.getCategory());
         product.setCategory(category);
 
         return product;

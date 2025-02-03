@@ -1,7 +1,5 @@
 package org.springboot.proxyapi.controller;
 
-import org.springboot.proxyapi.dto.FakeStoreDto;
-import org.springboot.proxyapi.dto.ProductNotFoundExceptionDto;
 import org.springboot.proxyapi.exceptions.ProductNotFoundException;
 import org.springboot.proxyapi.model.Product;
 import org.springboot.proxyapi.service.ProductService;
@@ -9,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.InstanceNotFoundException;
 import java.util.List;
 
 @RestController()
@@ -27,7 +24,7 @@ public class ProductController {
 
         Product product = productService.getProductById(id);
 
-        return new ResponseEntity<Product>(product,HttpStatus.OK);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @GetMapping()
@@ -45,6 +42,9 @@ public class ProductController {
         return productService.updateProduct(id, product);
     }
 
-
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Product> removeProduct(@PathVariable("id") long id) throws ProductNotFoundException{
+        Product product = productService.removeProductById(id);
+        return new ResponseEntity<>(product,HttpStatus.OK);
+    }
 }
