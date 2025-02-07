@@ -5,18 +5,14 @@ import org.springboot.proxyapi.exceptions.ProductNotFoundException;
 import org.springboot.proxyapi.model.Category;
 import org.springboot.proxyapi.model.Product;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
-
-import javax.management.InstanceNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 
 @Service
 public class FakeStoreProductService implements ProductService {
@@ -56,12 +52,12 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public Product addProduct() {
+    public Product addProduct(Product product) {
         FakeStoreDto fakeStoreDto = new FakeStoreDto();
-        fakeStoreDto.setTitle("test product");
-        fakeStoreDto.setPrice(13.5);
-        fakeStoreDto.setDescription("lorem ipsum set");
-        fakeStoreDto.setCategory("electronic");
+        fakeStoreDto.setTitle(product.getTitle());
+        fakeStoreDto.setPrice(product.getPrice());
+        fakeStoreDto.setDescription(product.getDescription());
+        fakeStoreDto.setCategory(product.getCategory().getTitle());
         FakeStoreDto fSDto = restTemplate.postForObject("https://fakestoreapi.com/products",fakeStoreDto,FakeStoreDto.class);
 
         return convertFakeStoreDtoToProduct(fSDto);

@@ -3,6 +3,8 @@ package org.springboot.proxyapi.controller;
 import org.springboot.proxyapi.exceptions.ProductNotFoundException;
 import org.springboot.proxyapi.model.Product;
 import org.springboot.proxyapi.service.ProductService;
+import org.springboot.proxyapi.service.SelfProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +17,7 @@ public class ProductController {
 
     ProductService productService;
 
-    ProductController(ProductService productService) {
+    ProductController(@Qualifier("SelfProductService") ProductService productService) {
         this.productService = productService;
     }
 
@@ -33,8 +35,8 @@ public class ProductController {
     }
 
     @PostMapping()
-    public Product addProduct() {
-        return productService.addProduct();
+    public Product addProduct(@RequestBody Product product) {
+        return productService.addProduct(product);
     }
 
     @PutMapping("/{id}")
